@@ -2,77 +2,107 @@ package com.umtech.tawkandroid.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.gson.Gson
+import com.umtech.tawkandroid.R
 import com.umtech.tawkandroid.presentation.viewmodel.MainViewModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import org.koin.androidx.compose.getViewModel
 
-@OptIn(FlowPreview::class)
 @Composable
 fun MainScreen(navController: NavController, viewModel: MainViewModel = getViewModel()) {
-    val state by viewModel.state.collectAsState()
-    val listState = rememberLazyListState()
+    val users = viewModel.users.collectAsLazyPagingItems()
+    val loadState = users.loadState
 
-    // Debounce scrolling events to prevent multiple API calls
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo }
-            .map { it.lastOrNull()?.index ?: 0 }  // Get last visible index
-            .distinctUntilChanged()  // Prevent duplicate triggers
-            .debounce(300L)  // Add delay to prevent frequent calls
-            .collect { lastVisibleIndex ->
-                if (lastVisibleIndex >= state.data.size - 3) {
-                    viewModel.loadUsersWithPostCount()
-                }
+    when {
+        loadState.refresh is LoadState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(50.dp))
             }
-    }
-
-    LazyColumn(
-        state = listState,
-        contentPadding = PaddingValues(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(state.data.size) { index ->
-            val user = state.data[index]
-            UserItem(user, onClick = {
-                val userJson = Gson().toJson(user)
-                navController.navigate("user_details?user=$userJson")
-            })
         }
 
-        if (state.isLoading) {
-            item {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(36.dp))
+        loadState.refresh is LoadState.Error -> {
+            ErrorMessage(loadState.refresh as LoadState.Error) { users.retry() }
+        }
+
+        users.itemCount == 0 -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.no_users_available),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
+
+        else -> {
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(users.itemCount) { index ->
+                    val user = users[index]
+                    user?.let {
+                        UserItem(
+                            user = it,
+                            index = index, // ✅ Pass index to UserItem
+                            onClick = {
+                                val userJson = Gson().toJson(it)
+                                navController.navigate("user_details?user=$userJson")
+                            }
+                        )
+                    }
+                }
+
+                // ✅ Show Loading Indicator When More Data is Being Loaded
+                when (users.loadState.append) {
+                    is LoadState.Loading -> item { LoadingIndicator() }
+                    is LoadState.Error -> item { RetryButton { users.retry() } }
+                    else -> Unit
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun LoadingIndicator() {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(modifier = Modifier.size(36.dp))
+    }
+}
+
+@Composable
+fun RetryButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Button(onClick = onClick) {
+            Text(stringResource(R.string.retry))
         }
     }
 }

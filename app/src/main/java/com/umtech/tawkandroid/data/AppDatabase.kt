@@ -5,11 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.umtech.tawkandroid.data.model.UserEntity
+import com.umtech.tawkandroid.data.repository.dao.UserDao
 
 @Database(entities = [UserEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-//    abstract fun userDao(): UserDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
@@ -20,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "users_database"
+                    "app_database"
                 ).build()
                 INSTANCE = instance
                 instance

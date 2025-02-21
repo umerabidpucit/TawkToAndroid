@@ -1,4 +1,4 @@
-import java.util.*
+import java.util.Properties
 
 // Load credentials.properties file
 val credentialsProperties = Properties()
@@ -11,8 +11,8 @@ if (credentialsFile.exists()) {
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("kapt")
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
 }
 
 android {
@@ -27,7 +27,7 @@ android {
         versionName = "1.0"
 
         // Inject BASE_URL from credentials.properties
-            buildConfigField("String", "BASE_URL", "${credentialsProperties["BASE_URL"]}")
+        buildConfigField("String", "BASE_URL", "${credentialsProperties["BASE_URL"]}")
     }
 
     buildFeatures {
@@ -104,9 +104,11 @@ dependencies {
 
 
     // database
-    implementation("androidx.room:room-runtime:2.5.2")
-    implementation("androidx.room:room-ktx:2.5.2")
-//    kapt("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-paging:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
-
+    implementation("androidx.paging:paging-runtime:3.2.1")
+    implementation("androidx.paging:paging-compose:3.2.1")
 }
