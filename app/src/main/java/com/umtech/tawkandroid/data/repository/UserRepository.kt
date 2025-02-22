@@ -11,6 +11,5 @@ interface UserRepository {
     // Fetch users from API
     fun getUserData(since: Int): Flow<PagingData<User>>
     fun getUserDetailData(username: String): Flow<UserDetails>
-//    suspend fun getUserByLogin(login: String): UserEntity?
-//    suspend fun updateUserNotes(username: String, hasNotes: Boolean)
+    fun searchUsers(query: String): Flow<List<UserEntity>>
 }

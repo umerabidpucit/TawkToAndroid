@@ -8,6 +8,7 @@ import com.umtech.tawkandroid.data.repository.UserRepository
 import com.umtech.tawkandroid.data.repository.UserRepositoryImpl
 import com.umtech.tawkandroid.domain.usecase.FetchUserDetailUseCase
 import com.umtech.tawkandroid.domain.usecase.FetchUserUseCase
+import com.umtech.tawkandroid.domain.usecase.SearchUseCase
 import com.umtech.tawkandroid.presentation.viewmodel.MainViewModel
 import com.umtech.tawkandroid.presentation.viewmodel.UserDetailViewModel
 import okhttp3.OkHttpClient
@@ -42,7 +43,7 @@ val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get(), get(), get()) }
     single { FetchUserUseCase(get()) } // Provide UseCase
     single { FetchUserDetailUseCase(get()) }
-//    single { UpdateUserNotesUseCase(get()) }
-    viewModel { MainViewModel(get()) } // Provide ViewModel
+    single { SearchUseCase(get()) }
+    viewModel { MainViewModel(get(), get()) } // Provide ViewModel
     viewModel { UserDetailViewModel(get(), get()) } // Provide ViewModel
 }

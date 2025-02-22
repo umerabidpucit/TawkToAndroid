@@ -96,6 +96,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
 
     // Optional: If you need to use Kotlin reflection for testing purposes
+
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0")
 
     testImplementation("io.mockk:mockk:1.13.5")
@@ -111,4 +112,10 @@ dependencies {
 
     implementation("androidx.paging:paging-runtime:3.2.1")
     implementation("androidx.paging:paging-compose:3.2.1")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+    implementation("androidx.compose.foundation:foundation:1.7.0")
+    implementation("androidx.compose.animation:animation:1.7.0")
+    implementation("androidx.activity:activity-compose:1.9.0")
+
 }

@@ -23,10 +23,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import com.umtech.tawkandroid.R
 import com.umtech.tawkandroid.data.model.User
 
 @Composable
@@ -65,15 +69,18 @@ fun UserItem(user: User, index: Int, onClick: () -> Unit) {
                     contentAlignment = Alignment.Center
                 ) {
                     AsyncImage(
-                        model = user.avatarUrl,
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(user.avatarUrl)
+                            .diskCachePolicy(CachePolicy.ENABLED) // ✅ Caches image on disk
+                            .memoryCachePolicy(CachePolicy.ENABLED) // ✅ Keeps image in memory for fast access
+                            .crossfade(true) // ✅ Smooth transition effect
+                            .build(),
                         contentDescription = "Thumbnail for ${user.login}",
                         modifier = Modifier
                             .size(64.dp) // ✅ Image should be smaller to fit inside
                             .clip(CircleShape),
                         colorFilter = if (index % 4 == 3) {
-                            androidx.compose.ui.graphics.ColorFilter.colorMatrix(
-                                getInvertedColorMatrix()
-                            )
+                            androidx.compose.ui.graphics.ColorFilter.colorMatrix(getInvertedColorMatrix())
                         } else null
                     )
                 }
@@ -84,7 +91,7 @@ fun UserItem(user: User, index: Int, onClick: () -> Unit) {
             Column {
                 user.login?.let { Text(text = it, style = MaterialTheme.typography.bodyLarge) }
                 Text(
-                    text = "Posts: ${user.userViewType}",
+                    text = "Site Admin: ${if (user.siteAdmin == true) "Yes" else "No"}\nType: ${user.userViewType}",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -99,9 +106,8 @@ fun UserItem(user: User, index: Int, onClick: () -> Unit) {
 
             if (user.hasNotes) {
                 Icon(
-                    imageVector = Icons.Default.ArrowForward,
+                    painter = painterResource(id = R.drawable.ic_notes_icon),
                     contentDescription = "Has Notes",
-                    tint = Color.Yellow,
                     modifier = Modifier.size(24.dp)
                 )
             }

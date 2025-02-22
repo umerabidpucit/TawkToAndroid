@@ -1,5 +1,6 @@
 package com.umtech.tawkandroid.presentation.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
@@ -8,14 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.umtech.tawkandroid.presentation.ui.MainScreen
 
 @Composable
 fun KoinMVIComposeTheme(content: @Composable () -> Unit) {
+
+    val darkTheme = isSystemInDarkTheme() // Detect system dark mode
+    val colors = if (darkTheme) DarkColorPalette else LightColorPalette
     MaterialTheme(
-        colorScheme = lightColorScheme(),
+        colorScheme = colors,
         typography = CustomTypography,
         content = content
     )

@@ -39,15 +39,17 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.umtech.tawkandroid.presentation.ui.components.ShimmerUserDetails
 import com.umtech.tawkandroid.presentation.viewmodel.MainViewModel
 import com.umtech.tawkandroid.presentation.viewmodel.UserDetailViewModel
-import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun UserDetailsScreen(viewModel: UserDetailViewModel,
-                      mainViewModel: MainViewModel,
-                      username: String,
-                      onBackClick: () -> Unit) {
+fun UserDetailsScreen(
+    viewModel: UserDetailViewModel,
+    mainViewModel: MainViewModel,
+    username: String,
+    onBackClick: () -> Unit
+) {
     val userDetail by viewModel.userDetail.collectAsState()
 
     // Call API when screen loads
@@ -183,9 +185,7 @@ fun UserDetailsScreen(viewModel: UserDetailViewModel,
             }
         } ?: run {
             // ✅ Show Loading State
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Loading user details...", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            }
+            ShimmerUserDetails()
         }
     }
 }

@@ -29,8 +29,8 @@ class UserRepositoryImpl(
     override fun getUserData(since: Int): Flow<PagingData<User>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20, // ✅ Allow API to control batch size
-                prefetchDistance = 1, // ✅ Only trigger API when user scrolls near end
+                pageSize = 20, // ✅ Fetch in batches of 20
+                prefetchDistance = 1, // ✅ Start fetching earlier to avoid lag
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
@@ -39,7 +39,7 @@ class UserRepositoryImpl(
                     userDetailDao,
                     remoteDataSource
                 )
-            } // ✅ Pass `userDetailDao`
+            }
         ).flow
     }
 
@@ -78,4 +78,6 @@ class UserRepositoryImpl(
 //    override suspend fun updateUserNotes(username: String, hasNotes: Boolean) {
 //        userDao.updateUserNotes(username, hasNotes)
 //    }
+
+    override fun searchUsers(query: String): Flow<List<UserEntity>> = userDao.searchUsers(query)
 }
