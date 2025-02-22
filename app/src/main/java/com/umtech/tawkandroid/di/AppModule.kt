@@ -1,6 +1,7 @@
 package com.umtech.tawkandroid.di
 
 import com.umtech.tawkandroid.BuildConfig
+import com.umtech.tawkandroid.common.NetworkMonitor
 import com.umtech.tawkandroid.data.AppDatabase
 import com.umtech.tawkandroid.data.api.ApiService
 import com.umtech.tawkandroid.data.remote.RemoteDataSource
@@ -13,6 +14,7 @@ import com.umtech.tawkandroid.presentation.viewmodel.MainViewModel
 import com.umtech.tawkandroid.presentation.viewmodel.UserDetailViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -44,6 +46,7 @@ val appModule = module {
     single { FetchUserUseCase(get()) } // Provide UseCase
     single { FetchUserDetailUseCase(get()) }
     single { SearchUseCase(get()) }
-    viewModel { MainViewModel(get(), get()) } // Provide ViewModel
+    single { NetworkMonitor(androidContext()) }
+    viewModel { MainViewModel(get(), get(), get()) } // Provide ViewModel
     viewModel { UserDetailViewModel(get(), get()) } // Provide ViewModel
 }

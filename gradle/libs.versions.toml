@@ -1,32 +1,122 @@
 [versions]
+activityCompose = "1.9.0"
 agp = "8.7.3"
+animation = "1.7.0"
+coilCompose = "2.4.0"
+foundation = "1.7.0"
+junitJupiterApi = "5.8.2"
 kotlin = "1.6.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+kotlinReflect = "1.8.0"
+kotlinxCoroutinesCore = "1.7.3"
+kotlinxCoroutinesTest = "1.7.1"
+loggingInterceptor = "4.11.0"
 material = "1.12.0"
 compose = "1.5.0"
 composeCompiler = "1.5.0"
 koin = "3.4.1"
+mockitoCore = "4.8.0"
+mockitoKotlin = "4.0.0"
+mockk = "1.13.5"
+pagingCompose = "3.2.1"
+retrofit = "2.9.0"
+roomRuntime = "2.6.1"
+shimmer = "0.5.0"
+lifecycleRuntimeKtx = "2.6.2"
+composeMaterial3 = "1.2.1"
 
 [libraries]
+
+# AndroidX Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+
+# Compose
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
+
+# Networking & Data
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+
+# Dependency Injection
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+
+# Room Database
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+
+# Paging
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingCompose" }
+
+# Image Loading
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+
+# UI & Effects
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Kotlin & Coroutines
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+
+# Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-
-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version = "2.6.2" }
-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
-koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.1" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterApi" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
+[bundles]
+
+# Core Android Libraries
+androidx-core = ["androidx-core-ktx", "androidx-appcompat", "lifecycle-runtime-ktx"]
+
+# Compose Bundle
+compose = ["androidx-activity-compose",
+    "androidx-animation",
+    "androidx-foundation",
+    "compose-ui",
+    "compose-ui-tooling",
+    "compose-material3"]
+
+# Networking Bundle
+networking = ["retrofit", "converter-gson", "logging-interceptor"]
+
+# Dependency Injection Bundle
+di = ["koin-android", "koin-compose"]
+
+# Room Database Bundle
+room = ["androidx-room-ktx", "androidx-room-paging", "androidx-room-runtime"]
+
+# Paging Bundle
+paging = ["androidx-paging-compose", "androidx-paging-runtime"]
+
+# UI Bundle
+ui = ["coil-compose", "shimmer", "material"]
+
+# Coroutines Bundle
+coroutines = ["kotlinx-coroutines-android", "kotlinx-coroutines-core"]

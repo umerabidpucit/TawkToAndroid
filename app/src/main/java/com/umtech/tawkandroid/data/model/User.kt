@@ -27,7 +27,7 @@ data class User( //Network model
     @SerializedName("type") var type: String? = null,
     @SerializedName("user_view_type") var userViewType: String? = null,
     @SerializedName("site_admin") var siteAdmin: Boolean? = null,
-    val hasNotes: Boolean = false
+    var hasNotes: Boolean = false
 ) : Parcelable
 
 fun User.toEntity(): UserEntity {

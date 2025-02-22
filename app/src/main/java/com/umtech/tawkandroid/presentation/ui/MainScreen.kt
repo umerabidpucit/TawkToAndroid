@@ -23,12 +23,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.umtech.tawkandroid.R
+import com.umtech.tawkandroid.common.NetworkUtils.isInternetAvailable
 import com.umtech.tawkandroid.data.model.toUser
 import com.umtech.tawkandroid.presentation.viewmodel.MainViewModel
 import org.koin.androidx.compose.getViewModel
@@ -39,18 +41,33 @@ fun MainScreen(navController: NavController, viewModel: MainViewModel = getViewM
     val users = viewModel.users.collectAsLazyPagingItems()
     val searchResults by viewModel.searchResults.collectAsState()
 
+    val isConnected by viewModel.isConnected.collectAsState()
+
+    LaunchedEffect(isConnected) {
+        if (isConnected) {
+            if (users.itemCount == 0) {
+                users.retry()
+            }
+        }
+    }
+
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.notesUpdated.collect { updatedUsername ->
             val index = users.itemSnapshotList.indexOfFirst { it?.login == updatedUsername }
             if (index != -1) {
+                users[index]?.hasNotes = true
                 users.refresh()
             }
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(8.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
         // Search Bar
         TextField(
             value = searchQuery,
@@ -86,15 +103,26 @@ fun MainScreen(navController: NavController, viewModel: MainViewModel = getViewM
             }
 
             users.loadState.refresh is LoadState.Error -> {
-                ErrorMessage(users.loadState.refresh as LoadState.Error) { users.retry() }
+                ErrorMessage(users.loadState.refresh as LoadState.Error) {
+                    if (isInternetAvailable(context)) {
+                        users.retry()
+                    }
+                }
             }
 
             users.itemCount == 0 -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = stringResource(R.string.no_users_available),
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(R.string.no_users_available),
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        if (isInternetAvailable(context)) {
+                            RetryButton { users.retry() }
+                        } else {
+                            Text(text = stringResource(R.string.no_internet))
+                        }
+                    }
                 }
             }
 
