@@ -68,7 +68,7 @@ fun MainScreen(navController: NavController, viewModel: MainViewModel = getViewM
                             index = index, // ✅ Pass index to UserItem
                             onClick = {
                                 val userJson = Gson().toJson(it)
-                                navController.navigate("user_details?user=$userJson")
+                                navController.navigate("userDetail/${user.login}")
                             }
                         )
                     }

@@ -4,13 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.umtech.tawkandroid.data.model.UserDetailEntity
 import com.umtech.tawkandroid.data.model.UserEntity
 import com.umtech.tawkandroid.data.repository.dao.UserDao
+import com.umtech.tawkandroid.data.repository.dao.UserDetailDao
 
-@Database(entities = [UserEntity::class], version = 1, exportSchema = false)
+@Database(entities = [UserEntity::class, UserDetailEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
+
+    abstract fun userDetailDao(): UserDetailDao
 
     companion object {
         @Volatile
@@ -22,7 +26,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration() // ✅ Clears database on schema changes
+                    .build()
                 INSTANCE = instance
                 instance
             }

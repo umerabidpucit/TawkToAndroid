@@ -9,6 +9,8 @@ import com.google.gson.Gson
 import com.umtech.tawkandroid.data.model.User
 import com.umtech.tawkandroid.presentation.ui.MainScreen
 import com.umtech.tawkandroid.presentation.ui.UserDetailsScreen
+import com.umtech.tawkandroid.presentation.viewmodel.UserDetailViewModel
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -22,17 +24,17 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         // User Details Screen
-        composable(
-            "user_details?user={user}",
-            arguments = listOf(navArgument("user") {
-                type = androidx.navigation.NavType.StringType
-            })
-        ) { backStackEntry ->
-            val userJson = backStackEntry.arguments?.getString("user")
-            userJson?.let {
-                val user = Gson().fromJson(it, User::class.java)
-                UserDetailsScreen(user = user)
-            }
+        composable("userDetail/{username}") { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: return@composable
+
+            // ✅ Get ViewModel using Koin
+            val viewModel: UserDetailViewModel = getViewModel()
+
+            UserDetailsScreen(
+                viewModel = viewModel,
+                username = username,
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }

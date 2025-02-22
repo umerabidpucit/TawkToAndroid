@@ -7,7 +7,6 @@ import com.umtech.tawkandroid.data.model.toEntity
 import com.umtech.tawkandroid.data.model.toUser
 import com.umtech.tawkandroid.data.remote.RemoteDataSource
 import com.umtech.tawkandroid.data.repository.dao.UserDao
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -52,7 +51,8 @@ class UserPagingSource(
                 }
 
                 // ✅ Save users to Room
-                val newUsers = apiUsers.filter { (it.id ?: 0) > lastStoredUserId } // Avoid duplicates
+                val newUsers =
+                    apiUsers.filter { (it.id ?: 0) > lastStoredUserId } // Avoid duplicates
                 if (newUsers.isNotEmpty()) {
                     userDao.insertUsers(newUsers.map { it.toEntity() })
                 }

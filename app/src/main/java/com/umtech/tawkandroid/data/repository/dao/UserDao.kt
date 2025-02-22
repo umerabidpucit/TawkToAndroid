@@ -1,6 +1,5 @@
 package com.umtech.tawkandroid.data.repository.dao
 
-import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
