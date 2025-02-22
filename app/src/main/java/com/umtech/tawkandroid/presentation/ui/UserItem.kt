@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -95,6 +96,15 @@ fun UserItem(user: User, index: Int, onClick: () -> Unit) {
                 contentDescription = "Forward",
                 modifier = Modifier.size(24.dp)
             )
+
+            if (user.hasNotes) {
+                Icon(
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = "Has Notes",
+                    tint = Color.Yellow,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }

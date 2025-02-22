@@ -26,7 +26,8 @@ data class User( //Network model
     @SerializedName("received_events_url") var receivedEventsUrl: String? = null,
     @SerializedName("type") var type: String? = null,
     @SerializedName("user_view_type") var userViewType: String? = null,
-    @SerializedName("site_admin") var siteAdmin: Boolean? = null
+    @SerializedName("site_admin") var siteAdmin: Boolean? = null,
+    val hasNotes: Boolean = false
 ) : Parcelable
 
 fun User.toEntity(): UserEntity {
@@ -34,6 +35,7 @@ fun User.toEntity(): UserEntity {
         id = this.id ?: 0,
         login = this.login.orEmpty(),
         avatarUrl = this.avatarUrl.orEmpty(),
-        userViewType = this.userViewType
+        userViewType = this.userViewType,
+        hasNotes = this.hasNotes
     )
 }

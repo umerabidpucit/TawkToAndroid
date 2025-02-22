@@ -4,34 +4,39 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.google.gson.Gson
-import com.umtech.tawkandroid.data.model.User
 import com.umtech.tawkandroid.presentation.ui.MainScreen
 import com.umtech.tawkandroid.presentation.ui.UserDetailsScreen
+import com.umtech.tawkandroid.presentation.viewmodel.MainViewModel
 import com.umtech.tawkandroid.presentation.viewmodel.UserDetailViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
+    // ✅ Get MainViewModel only once and share it across screens
+    val mainViewModel: MainViewModel = getViewModel()
+
     NavHost(
         navController = navController,
         startDestination = "home"
     ) {
-        // Home Screen (your initial screen where you list users)
+        // Home Screen (Main Screen)
         composable("home") {
-            MainScreen(navController = navController)
+            MainScreen(
+                navController = navController,
+                viewModel = mainViewModel // ✅ Pass MainViewModel
+            )
         }
 
         // User Details Screen
         composable("userDetail/{username}") { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username") ?: return@composable
 
-            // ✅ Get ViewModel using Koin
-            val viewModel: UserDetailViewModel = getViewModel()
+            // ✅ Get UserDetailViewModel using Koin
+            val userDetailViewModel: UserDetailViewModel = getViewModel()
 
             UserDetailsScreen(
-                viewModel = viewModel,
+                viewModel = userDetailViewModel,
+                mainViewModel = mainViewModel, // ✅ Pass MainViewModel
                 username = username,
                 onBackClick = { navController.popBackStack() }
             )

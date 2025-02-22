@@ -5,8 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.umtech.tawkandroid.data.model.User
 import com.umtech.tawkandroid.data.model.UserDetails
+import com.umtech.tawkandroid.data.model.UserEntity
 import com.umtech.tawkandroid.data.model.toDetailEntity
-import com.umtech.tawkandroid.data.model.toEntity
 import com.umtech.tawkandroid.data.model.toUserDetails
 import com.umtech.tawkandroid.data.remote.RemoteDataSource
 import com.umtech.tawkandroid.data.repository.dao.UserDao
@@ -15,9 +15,9 @@ import com.umtech.tawkandroid.data.repository.paging.UserPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 
 class UserRepositoryImpl(
     private val userDao: UserDao,
@@ -25,18 +25,21 @@ class UserRepositoryImpl(
     private val remoteDataSource: RemoteDataSource
 ) : UserRepository {
 
-//    private val requestMutex =
-//        Mutex() // Ensures only 1 network call at a time for each since(last count)
-
     // Fetch users from API, store in Room if empty
     override fun getUserData(since: Int): Flow<PagingData<User>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 20, // ✅ Keep page size small but allow API to control batch size
+                pageSize = 20, // ✅ Allow API to control batch size
                 prefetchDistance = 1, // ✅ Only trigger API when user scrolls near end
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { UserPagingSource(userDao, remoteDataSource) }
+            pagingSourceFactory = {
+                UserPagingSource(
+                    userDao,
+                    userDetailDao,
+                    remoteDataSource
+                )
+            } // ✅ Pass `userDetailDao`
         ).flow
     }
 
@@ -50,7 +53,8 @@ class UserRepositoryImpl(
                 emit(cachedUser.toUserDetails()) // ✅ Convert Entity to Domain Model
             } else {
                 // Fetch from API
-                val userDetails: UserDetails = remoteDataSource.fetchUserDetail(username).first() // ✅ Explicit Type
+                val userDetails: UserDetails =
+                    remoteDataSource.fetchUserDetail(username).first() // ✅ Explicit Type
 
                 // Convert API response to Room Entity
                 val userDetailEntity = userDetails.toDetailEntity()
@@ -65,4 +69,13 @@ class UserRepositoryImpl(
             emit(UserDetails.placeholder()) // ✅ Show placeholder if API fails
         }
     }.flowOn(Dispatchers.IO)
+
+
+//    override suspend fun getUserByLogin(login: String): UserEntity? {
+//        return userDao.getUserByName(login).firstOrNull()
+//    }
+//
+//    override suspend fun updateUserNotes(username: String, hasNotes: Boolean) {
+//        userDao.updateUserNotes(username, hasNotes)
+//    }
 }

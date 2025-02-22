@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUser(user: UserEntity)
+    @Query("UPDATE users SET hasNotes = :hasNotes WHERE login = :username")
+    suspend fun updateUserNotes(username: String, hasNotes: Boolean)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUsers(users: List<UserEntity>)
@@ -23,8 +23,8 @@ interface UserDao {
     @Query("SELECT id FROM users") // ✅ Fetch only IDs to filter duplicates
     fun getUsersIds(): Flow<List<Int>>
 
-    @Query("SELECT * FROM users WHERE id = :userId")
-    fun getUserById(userId: Int): Flow<UserEntity>
+    @Query("SELECT * FROM users WHERE login = :username")
+    fun getUserByName(username: String): Flow<UserEntity>
 
     @Delete
     suspend fun deleteUser(user: UserEntity)
@@ -34,4 +34,16 @@ interface UserDao {
 
     @Query("SELECT MAX(id) FROM users")
     fun getMaxUserId(): Flow<Int?>
+
+    @Query("""
+    SELECT u.id, u.login, u.avatarUrl, u.userViewType, u.timestamp, 
+           CASE 
+               WHEN ud.notes IS NOT NULL AND ud.notes != '' THEN 1 
+               ELSE 0 
+           END AS hasNotes
+    FROM users u
+    LEFT JOIN user_details ud ON u.login = ud.login
+    ORDER BY u.id ASC
+""")
+    fun getUsersWithNotes(): PagingSource<Int, UserEntity>
 }

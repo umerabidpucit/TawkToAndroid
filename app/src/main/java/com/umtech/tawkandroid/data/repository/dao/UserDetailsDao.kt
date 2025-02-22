@@ -16,4 +16,14 @@ interface UserDetailDao {
 
     @Query("UPDATE user_details SET notes = :notes WHERE login = :username")
     suspend fun updateNotes(username: String, notes: String)
+
+    @Query("""
+    SELECT EXISTS (
+        SELECT 1 FROM user_details 
+        WHERE login = :userLogin 
+        AND notes IS NOT NULL 
+        AND notes != ''
+    )
+""")
+    suspend fun hasNotes(userLogin: String): Boolean
 }

@@ -9,7 +9,8 @@ data class UserEntity(
     val login: String?,
     val avatarUrl: String?,
     val userViewType: String?,
-    val timestamp: Long = System.currentTimeMillis() // Track order on basis of timestamp
+    val timestamp: Long = System.currentTimeMillis(), // Track order on basis of timestamp
+    var hasNotes: Boolean = false
 )
 
 fun UserEntity.toUser(): User {
@@ -17,6 +18,7 @@ fun UserEntity.toUser(): User {
         id = this.id,
         login = this.login,
         avatarUrl = this.avatarUrl,
-        userViewType = this.userViewType
+        userViewType = this.userViewType,
+        hasNotes = this.hasNotes
     )
 }

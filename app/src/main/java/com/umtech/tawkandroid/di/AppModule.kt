@@ -42,6 +42,7 @@ val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get(), get(), get()) }
     single { FetchUserUseCase(get()) } // Provide UseCase
     single { FetchUserDetailUseCase(get()) }
+//    single { UpdateUserNotesUseCase(get()) }
     viewModel { MainViewModel(get()) } // Provide ViewModel
     viewModel { UserDetailViewModel(get(), get()) } // Provide ViewModel
 }
