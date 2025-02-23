@@ -57,9 +57,9 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
 
     // JUnit for unit tests
     testImplementation(libs.junit.jupiter.api)
@@ -70,6 +70,7 @@ dependencies {
 
     // Mockito Kotlin extensions (for mocking with Kotlin)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.turbine)
 
     // Kotlinx Coroutines Test for runTest and other testing utilities
     testImplementation(libs.kotlinx.coroutines.test)
@@ -79,6 +80,13 @@ dependencies {
     testImplementation(libs.kotlin.reflect)
 
     testImplementation(libs.mockk)
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.0")
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation(libs.androidx.runner)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation("androidx.test:runner:1.5.2")
 
     //androidx core
     implementation(libs.bundles.androidx.core)

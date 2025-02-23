@@ -15,7 +15,6 @@ import com.umtech.tawkandroid.data.repository.paging.UserPagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
@@ -69,15 +68,6 @@ class UserRepositoryImpl(
             emit(UserDetails.placeholder()) // ✅ Show placeholder if API fails
         }
     }.flowOn(Dispatchers.IO)
-
-
-//    override suspend fun getUserByLogin(login: String): UserEntity? {
-//        return userDao.getUserByName(login).firstOrNull()
-//    }
-//
-//    override suspend fun updateUserNotes(username: String, hasNotes: Boolean) {
-//        userDao.updateUserNotes(username, hasNotes)
-//    }
 
     override fun searchUsers(query: String): Flow<List<UserEntity>> = userDao.searchUsers(query)
 }
