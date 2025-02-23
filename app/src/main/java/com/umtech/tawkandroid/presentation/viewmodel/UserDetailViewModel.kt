@@ -9,7 +9,6 @@ import com.umtech.tawkandroid.data.repository.dao.UserDetailDao
 import com.umtech.tawkandroid.domain.usecase.FetchUserDetailUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -22,7 +21,6 @@ class UserDetailViewModel(
     val userDetail: StateFlow<UserDetails?> = _userDetail
 
     private val _notesUpdated = MutableSharedFlow<String>() // ✅ Notify when notes update
-    val notesUpdated: SharedFlow<String> = _notesUpdated
 
     fun fetchUserDetails(username: String) {
         viewModelScope.launch {

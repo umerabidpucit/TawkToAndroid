@@ -52,13 +52,6 @@ open class MainViewModel(
         }
     }
 
-//    fun refreshUserAndUpdateNotes(userLogin: String) {
-//        viewModelScope.launch {
-//            updateUserNotesUseCase.updateUserNotes(userLogin)
-//            _notesUpdated.emit(userLogin)
-//        }
-//    }
-
     fun searchUsers(query: String) {
         viewModelScope.launch {
             searchUsersUseCase(query).collect { results ->

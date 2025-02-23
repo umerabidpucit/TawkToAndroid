@@ -87,6 +87,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation("androidx.test:runner:1.5.2")
+    testImplementation("org.robolectric:robolectric:4.10")
+    testImplementation("androidx.paging:paging-common:3.2.1")
+    testImplementation("androidx.paging:paging-common-ktx:3.2.1")
+    testImplementation("androidx.paging:paging-testing:3.2.1")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
 
     //androidx core
     implementation(libs.bundles.androidx.core)
